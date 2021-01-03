@@ -6,7 +6,7 @@ using namespace std;
 const int cNUMBER_ELEMENTS = 10000000;
 const int cNUM_THREADS = 2;
 const int cTHRESHOLD_PARALLEL_HIRACHY = 1;
-bool parallel = false;
+bool parallel = true;
 
 //* Utility-Functions *//
 int randomNumber() {
@@ -96,14 +96,17 @@ void mergeSort(int* arr,  int leftIndex,  int rightIndex, int hirachy) {
             {
                 mergeSort(arr, splitIndex + 1, rightIndex, hirachy + 1);
             }
-
+            #pragma omp section 
+            {
+                merge(arr, leftIndex, splitIndex, rightIndex);
+            }
         }
     }
     else {
         mergeSort(arr, leftIndex, splitIndex, hirachy + 1);
         mergeSort(arr, splitIndex + 1, rightIndex, hirachy + 1);
+        merge(arr, leftIndex, splitIndex, rightIndex);
     }
-    merge(arr, leftIndex, splitIndex, rightIndex);
 }
 
 
